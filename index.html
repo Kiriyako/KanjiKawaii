@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KanjiYuki</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="m-5 text-5xl font-bold">
+    <div>
+        <h1 class="text-blue-400">KanjiYuki</h1>
+    </div>
+    <div>
+        <br>
+        <form onsubmit="submitHandler(event)">
+            <input autocomplete="off" id="kanji" class="rounded-3xl border-blue-400 border-2 text-4xl p-2" placeholder="Search"></input>
+        </form>
+        <br>
+    </div>
+            <script language ="JavaScript">
+        function access(kanji) {
+            var infoDiv = document.getElementById('info');
+            fetch('https://kanjiapi.dev/v1/kanji/'+ kanji)
+                .then(response => response.json())
+                .then(data => {
+                    infoDiv.innerHTML = "";
+                            var infoDD = document.createElement('div');
+                            infoDD.innerHTML = `<h2 class="text-black text-6xl">${kanji} </h2> <hr class="h-1 bg-blue-400"> 
+                            <h2 class="text-green-700 text-2xl capitalize"> Grade: ${data.grade} / JLPT N${data.jlpt} </h2> <h2 class="text-black text-2xl capitalize"> Stroke Count: ${data.stroke_count}
+                            <br> Meanings: ${data.meanings.join(", ")} 
+                            <br> Kun Readings: ${data.kun_readings.join(", ")}   <br> On Readings: ${data.on_readings.join(", ")} 
+                            <br> Name Readings: ${data.name_readings.join(", ")} <br> Unicode: ${data.unicode} </h2> `;
+                            infoDiv.appendChild(infoDD);
+                        
+                })
+                .catch(error => console.log(error));
+        }
+        
+        function submitHandler(event) {
+            event.preventDefault();
+            var kanji = document.getElementById("kanji").value;
+            access(kanji);
+        }
+    </script>
+    <div id="info">
+    </div>
+</body>
+</html>
