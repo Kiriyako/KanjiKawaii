@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.tailwindcss.com"></script> 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KanjiYuki</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="m-5 text-5xl font-bold">
+<body class="font-mono m-5 text-5xl font-bold bg-slate-900 text-slate-50">
     <div>
-        <h1 class="text-blue-400">KanjiYuki</h1>
+        <h1 class="text-sky-400">KanjiYuki</h1>
     </div>
     <div>
         <br>
         <form onsubmit="submitHandler(event)">
-            <input autocomplete="off" id="kanji" class="rounded-3xl border-blue-400 border-2 text-4xl p-2" placeholder="Search"></input>
+            <input autocomplete="off" id="kanji" class="rounded-3xl bg-slate-900 border-sky-400 border-2 text-4xl p-2" placeholder="Search"></input>
         </form>
         <br>
     </div>
+    <script src="https://unpkg.com/wanakana@5.1.0/wanakana.min.js"></script>
             <script language ="JavaScript">
         function access(kanji) {
             var infoDiv = document.getElementById('info');
             fetch('https://kanjiapi.dev/v1/kanji/'+ kanji)
                 .then(response => response.json())
                 .then(data => {
+                    kunroma = wanakana.toRomaji(data.kun_readings.join(", "))
+                    onroma = wanakana.toRomaji(data.on_readings.join(", "))
+                    nameroma = wanakana.toRomaji(data.name_readings.join(", "))
                     infoDiv.innerHTML = "";
                             var infoDD = document.createElement('div');
-                            infoDD.innerHTML = `<h2 class="text-black text-6xl">${kanji} </h2> <hr class="h-1 bg-blue-400"> 
-                            <h2 class="text-green-700 text-2xl capitalize"> Grade: ${data.grade} / JLPT N${data.jlpt} </h2> <h2 class="text-black text-2xl capitalize"> Stroke Count: ${data.stroke_count}
-                            <br> Meanings: ${data.meanings.join(", ")} 
-                            <br> Kun Readings: ${data.kun_readings.join(", ")}   <br> On Readings: ${data.on_readings.join(", ")} 
-                            <br> Name Readings: ${data.name_readings.join(", ")} <br> Unicode: ${data.unicode} </h2> `;
+                            infoDD.innerHTML = `<h2 class="hover:text-sky-400 text-6xl">${kanji} </h2> <hr> 
+                            <h2 class="text-2xl capitalize"> Grade: ${data.grade} / JLPT N${data.jlpt} </h2> <h2 class=" text-2xl capitalize"> 
+                             Meanings: ${data.meanings.join(", ")} <br> Stroke Count: ${data.stroke_count}
+                            <br> Kun Readings: ${data.kun_readings.join(", ")} / Romaji: ${kunroma}  <br> On Readings: ${data.on_readings.join(", ")} / Romaji: ${onroma}
+                            <br> ${data.name_readings.length > 0 ? `Name Readings: ${data.name_readings.join(", ")} / Romaji: ${nameroma}<br>` : ''} Unicode: ${data.unicode} </h2> `;
                             infoDiv.appendChild(infoDD);
                         
                 })
@@ -43,7 +48,7 @@
             access(kanji);
         }
     </script>
-    <div id="info">
+    <div class="text-slate-50" id="info">
     </div>
 </body>
 </html>
